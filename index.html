@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>OREO - Donaciones</title>
+
+    <!-- Librería para las gráficas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(
+                135deg,
+                #f5b6c8,
+                #ffd166,
+                #9b633f,
+                #a8d8f0
+            );
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .contenedor {
+            max-width: 1100px;
+            margin: auto;
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 55px;
+            font-weight: bold;
+            color: #0054a6;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .descripcion {
+            text-align: center;
+            color: #666;
+            margin: 20px 0 35px;
+            font-size: 18px;
+        }
+
+        /* BOTONES */
+
+        .causas {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .causa {
+            border: none;
+            padding: 25px;
+            border-radius: 18px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .causa:hover {
+            transform: scale(1.03);
+        }
+
+        .vivienda {
+            background: #f5b6c8;
+        }
+
+        .alimentacion {
+            background: #ffd166;
+        }
+
+        .educacion {
+            background: #c58b62;
+            color: white;
+        }
+
+        .salud {
+            background: #a8d8f0;
+        }
+
+        /* INFORMACIÓN */
+
+        .resultado {
+            background: #f5f5f5;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .resultado h2 {
+            color: #0054a6;
+            margin-bottom: 15px;
+        }
+
+        .datos {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .dato {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .dato h3 {
+            color: #0054a6;
+            font-size: 25px;
+        }
+
+        .graficas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .grafica {
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 20px;
+        }
+
+        @media(max-width: 700px) {
+
+            .causas {
+                grid-template-columns: 1fr;
+            }
+
+            .datos {
+                grid-template-columns: 1fr;
+            }
+
+            .graficas {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<div class="contenedor">
+
+    <div class="logo">OREO</div>
+
+    <h1>Tu elección también genera esperanza ❤️</h1>
+
+    <p class="descripcion">
+        Gracias a las ventas de nuestras ediciones especiales,
+        parte de los ingresos será destinada a ayudar a las personas
+        afectadas. Tú puedes conocer cómo se distribuyen las donaciones.
+    </p>
+
+
+    <!-- BOTONES -->
+
+    <div class="causas">
+
+        <button class="causa vivienda"
+        onclick="mostrarDatos('Vivienda')">
+
+            🏠 <h2>Vivienda</h2>
+
+            <p>
+                Reconstrucción y reparación
+                de hogares afectados.
+            </p>
+
+        </button>
+
+
+        <button class="causa alimentacion"
+        onclick="mostrarDatos('Alimentación')">
+
+            🍽️ <h2>Alimentación</h2>
+
+            <p>
+                Alimentos y productos básicos
+                para las familias.
+            </p>
+
+        </button>
+
+
+        <button class="causa educacion"
+        onclick="mostrarDatos('Educación')">
+
+            🎒 <h2>Educación</h2>
+
+            <p>
+                Apoyo educativo para niños
+                y jóvenes afectados.
+            </p>
+
+        </button>
+
+
+        <button class="causa salud"
+        onclick="mostrarDatos('Salud')">
+
+            ❤️ <h2>Salud y bienestar</h2>
+
+            <p>
+                Recursos y apoyo para
+                las comunidades.
+            </p>
+
+        </button>
+
+    </div>
+
+
+    <!-- RESULTADO -->
+
+    <div class="resultado">
+
+        <h2 id="tituloCausa">
+            Selecciona una causa
+        </h2>
+
+        <p id="descripcionCausa">
+            Haz clic en una de las opciones para conocer
+            los resultados de las donaciones.
+        </p>
+
+
+        <div class="datos">
+
+            <div class="dato">
+
+                <p>Personas que eligieron esta causa</p>
+
+                <h3 id="votos">
+                    -
+                </h3>
+
+            </div>
+
+
+            <div class="dato">
+
+                <p>Porcentaje de elección</p>
+
+                <h3 id="porcentaje">
+                    -
+                </h3>
+
+            </div>
+
+
+            <div class="dato">
+
+                <p>Donación destinada</p>
+
+                <h3 id="donacion">
+                    -
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- GRÁFICAS -->
+
+    <div class="graficas">
+
+
+        <div class="grafica">
+
+            <h2 style="text-align:center;">
+                Ventas de las 4 ediciones
+            </h2>
+
+            <canvas id="graficaVentas"></canvas>
+
+        </div>
+
+
+        <div class="grafica">
+
+            <h2 style="text-align:center;">
+                Distribución de donaciones
+            </h2>
+
+            <canvas id="graficaDonaciones"></canvas>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+    /*
+    =========================================
+
+    DATOS DEL PROYECTO
+
+    Estos son datos de ejemplo.
+
+    Precio de cada paquete:
+    $3.000
+
+    =========================================
+    */
+
+
+    const ventas = {
+
+        Primavera: 3200,
+
+        Verano: 4100,
+
+        Otoño: 2800,
+
+        Invierno: 2400
+
+    };
+
+
+    /*
+    TOTAL DE PAQUETES VENDIDOS
+
+    12.500 paquetes
+
+    12.500 x $3.000
+
+    = $37.500.000
+
+    */
+
+
+    const totalVentas =
+        3200 + 4100 + 2800 + 2400;
+
+
+    const precioGalleta = 3000;
+
+
+    const ingresosTotales =
+        totalVentas * precioGalleta;
+
+
+    /*
+    En este ejemplo:
+
+    90% DONACIONES
+
+    10% PRODUCCIÓN
+
+    */
+
+
+    const dineroDonacion =
+        ingresosTotales * 0.90;
+
+
+    /*
+    VOTOS DE LOS CLIENTES
+
+    Cada persona escanea el QR
+    y elige una causa.
+    */
+
+
+    const causas = {
+
+        Vivienda: {
+
+            votos: 4200,
+
+            porcentaje: 35,
+
+            donacion:
+            dineroDonacion * 0.35,
+
+            descripcion:
+            "Dinero destinado a la reconstrucción y reparación de viviendas afectadas."
+
+        },
+
+
+        Alimentación: {
+
+            votos: 3600,
+
+            porcentaje: 30,
+
+            donacion:
+            dineroDonacion * 0.30,
+
+            descripcion:
+            "Dinero destinado a alimentos y productos básicos para las familias."
+
+        },
+
+
+        Educación: {
+
+            votos: 3000,
+
+            porcentaje: 20,
+
+            donacion:
+            dineroDonacion * 0.20,
+
+            descripcion:
+            "Dinero destinado al apoyo educativo de niños y jóvenes."
+
+        },
+
+
+        Salud: {
+
+            votos: 1700,
+
+            porcentaje: 15,
+
+            donacion:
+            dineroDonacion * 0.15,
+
+            descripcion:
+            "Dinero destinado a recursos y apoyo para la salud y bienestar."
+
+        }
+
+    };
+
+
+    /*
+    =========================================
+
+    FUNCIÓN PARA MOSTRAR LOS DATOS
+
+    =========================================
+    */
+
+
+    function mostrarDatos(nombre) {
+
+        const causa = causas[nombre];
+
+
+        document.getElementById("tituloCausa").innerHTML =
+        "Resultados: " + nombre;
+
+
+        document.getElementById("descripcionCausa").innerHTML =
+        causa.descripcion;
+
+
+        document.getElementById("votos").innerHTML =
+        causa.votos.toLocaleString();
+
+
+        document.getElementById("porcentaje").innerHTML =
+        causa.porcentaje + "%";
+
+
+        document.getElementById("donacion").innerHTML =
+        "$" + causa.donacion.toLocaleString("es-CO");
+
+
+        /*
+        Lleva automáticamente a los resultados
+        */
+
+        document.querySelector(".resultado")
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+
+    }
+
+
+
+    /*
+    =========================================
+
+    GRÁFICA DE VENTAS
+
+    =========================================
+    */
+
+
+    new Chart(
+        document.getElementById("graficaVentas"),
+        {
+
+            type: "bar",
+
+            data: {
+
+                labels: [
+
+                    "🌸 Primavera",
+
+                    "☀️ Verano",
+
+                    "🍂 Otoño",
+
+                    "❄️ Invierno"
+
+                ],
+
+                datasets: [{
+
+                    label:
+                    "Paquetes vendidos",
+
+                    data: [
+
+                        ventas.Primavera,
+
+                        ventas.Verano,
+
+                        ventas.Otoño,
+
+                        ventas.Invierno
+
+                    ],
+
+                    backgroundColor: [
+
+                        "#f5b6c8",
+
+                        "#ffd166",
+
+                        "#9b633f",
+
+                        "#a8d8f0"
+
+                    ],
+
+                    borderRadius: 10
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true
+
+            }
+
+        }
+
+    );
+
+
+
+    /*
+    =========================================
+
+    GRÁFICA DE DONACIONES
+
+    =========================================
+    */
+
+
+    new Chart(
+        document.getElementById("graficaDonaciones"),
+        {
+
+            type: "doughnut",
+
+            data: {
+
+                labels: [
+
+                    "🏠 Vivienda",
+
+                    "🍽️ Alimentación",
+
+                    "🎒 Educación",
+
+                    "❤️ Salud"
+
+                ],
+
+                datasets: [{
+
+                    data: [
+
+                        35,
+
+                        30,
+
+                        20,
+
+                        15
+
+                    ],
+
+                    backgroundColor: [
+
+                        "#f5b6c8",
+
+                        "#ffd166",
+
+                        "#9b633f",
+
+                        "#a8d8f0"
+
+                    ]
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                plugins: {
+
+                    legend: {
+
+                        position: "bottom"
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+</script>
+
+
+</body>
+
+</html>
